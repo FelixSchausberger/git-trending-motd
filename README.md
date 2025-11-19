@@ -10,8 +10,11 @@ Inspired by [github-trending-cli](https://github.com/psalias2006/github-trending
 
 <!-- EXAMPLE_OUTPUT_START -->
 ```
-
+[GE] mc36/freeRtr        Scilab ★2          today      freeRouter - networking swiss army knife
+[GH] google/adk-go       Go     ★134  today today      An open-source, code-first Go toolkit for...
+[GL] connect2x/sysnotify -      ★12         today
 ```
+<!-- EXAMPLE_OUTPUT_END -->
 
 **Legend:**
 - `[GH]` = GitHub, `[GL]` = GitLab, `[GE]` = Gitea
@@ -20,7 +23,6 @@ Inspired by [github-trending-cli](https://github.com/psalias2006/github-trending
 - `~` = Approximated (not from official trending API)
 
 *Note: Example output is automatically updated by CI on each push and daily at midnight UTC.*
-<!-- EXAMPLE_OUTPUT_END -->
 
 ## Features
 

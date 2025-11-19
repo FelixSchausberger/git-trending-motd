@@ -45,14 +45,30 @@ jobs:
 
       - name: Update README.md
         run: |
-          # Read the output
-          output=$(cat trotd_output.txt)
+          cat > update_readme.py << 'SCRIPT'
+          import re
 
-          # Create the new content block with markers
-          new_content="<!-- EXAMPLE_OUTPUT_START -->"$'\n'""\`\`\`"$'\n'"${output}"$'\n'""\`\`\`"$'\n'"<!-- EXAMPLE_OUTPUT_END -->"
+          # Read the trotd output
+          with open('trotd_output.txt', 'r') as f:
+              trotd_output = f.read().strip()
 
-          # Use perl to replace content between markers
-          perl -i -0pe 's/<!-- EXAMPLE_OUTPUT_START -->.*?<!-- EXAMPLE_OUTPUT_END -->/'"$(echo "$new_content" | sed 's/\\/\\\\/g; s/\//\\\//g; s/&/\\&/g')"'/gs' README.md
+          # Read the README
+          with open('README.md', 'r') as f:
+              readme = f.read()
+
+          # Create the replacement content (with code fence)
+          replacement = '<!-- EXAMPLE_OUTPUT_START -->\n```\n' + trotd_output + '\n```\n<!-- EXAMPLE_OUTPUT_END -->'
+
+          # Replace content between markers
+          pattern = r'<!-- EXAMPLE_OUTPUT_START -->.*?<!-- EXAMPLE_OUTPUT_END -->'
+          new_readme = re.sub(pattern, replacement, readme, flags=re.DOTALL)
+
+          # Write back to README
+          with open('README.md', 'w') as f:
+              f.write(new_readme)
+          SCRIPT
+
+          python3 update_readme.py
 
       - name: Check for changes
         id: check-changes
