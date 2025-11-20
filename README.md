@@ -10,9 +10,9 @@ Inspired by [github-trending-cli](https://github.com/psalias2006/github-trending
 
 <!-- EXAMPLE_OUTPUT_START -->
 ```
-[GE] mc36/freeRtr        Scilab ★2          today      freeRouter - networking swiss army knife
-[GH] google/adk-go       Go     ★134  today today      An open-source, code-first Go toolkit for...
-[GL] connect2x/sysnotify -      ★12         today
+[GE] gitea/tea                    Go ★187        today      A command line tool to interact with Gitea...
+[GH] google/adk-go                Go ★127  today today      An open-source, code-first Go toolkit for...
+[GL] gitlab-org/quality/testcases -  ★14         today
 ```
 <!-- EXAMPLE_OUTPUT_END -->
 
