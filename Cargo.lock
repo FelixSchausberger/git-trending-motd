@@ -576,6 +576,30 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e629b9b98ef3dd8afe6ca2bd0f89306cec16d43d907889945bc5d6687f2f13c7"
 
 [[package]]
+name = "git-trending-motd"
+version = "0.0.2"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "chrono",
+ "clap",
+ "clap_complete",
+ "colored 2.2.0",
+ "dirs",
+ "futures",
+ "mockito",
+ "regex",
+ "reqwest",
+ "scraper",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "tokio-retry",
+ "toml",
+]
+
+[[package]]
 name = "h2"
 version = "0.4.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2064,30 +2088,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9d12581f227e93f094d3af2ae690a574abb8a2b9b7a96e7cfe9647b2b617678"
 dependencies = [
  "once_cell",
-]
-
-[[package]]
-name = "trotd"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "chrono",
- "clap",
- "clap_complete",
- "colored 2.2.0",
- "dirs",
- "futures",
- "mockito",
- "regex",
- "reqwest",
- "scraper",
- "serde",
- "serde_json",
- "thiserror 1.0.69",
- "tokio",
- "tokio-retry",
- "toml",
 ]
 
 [[package]]

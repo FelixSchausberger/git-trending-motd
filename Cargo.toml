@@ -1,12 +1,12 @@
 [package]
-name = "trotd"
-version = "0.1.0"
+name = "git-trending-motd"
+version = "0.0.2"
 edition = "2021"
 rust-version = "1.89"
 authors = ["schausberger"]
 description = "Trending repositories of the day - minimal MOTD CLI"
 license = "MIT"
-repository = "https://github.com/schausberger/trotd"
+repository = "https://github.com/schausberger/git-trending-motd"
 
 [dependencies]
 tokio = { version = "1.41", features = ["rt-multi-thread", "macros", "fs"] }

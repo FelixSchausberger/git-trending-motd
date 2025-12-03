@@ -8,13 +8,14 @@ Inspired by [github-trending-cli](https://github.com/psalias2006/github-trending
 
 ## Example Output
 
-<!-- EXAMPLE_OUTPUT_START -->
 ```
-[GE] mc36/freeRtr        Scilab ★2          today      freeRouter - networking swiss army knife
-[GH] google/adk-go       Go     ★134  today today      An open-source, code-first Go toolkit for...
-[GL] connect2x/sysnotify -      ★12         today
+⭐[GH] anthropics/anthropic-cookbook                     Python        ★30   today      yesterday  A collection of notebooks/recipes showcasing...
+  [GH] langgenius/dify                                   TypeScript    ★162  today      today      Dify is an open-source LLM app development...
+  [GH] microsoft/TypeChat                                TypeScript    ★8090            today      TypeChat is a library that makes it easy to...
+  [GL] gitlab-org/gitlab                                 Ruby          ★23817           3d ago     GitLab CE Mirror | Please open new issues...
+  [GL] inkscape/inkscape                                 C++           ★2458            yesterday  Inkscape vector image editor
+  [GE] go-gitea/gitea                                    Go            ★41249           today      Git with a cup of tea! Painless self-hosted...
 ```
-<!-- EXAMPLE_OUTPUT_END -->
 
 **Legend:**
 - `[GH]` = GitHub, `[GL]` = GitLab, `[GE]` = Gitea
@@ -23,7 +24,6 @@ Inspired by [github-trending-cli](https://github.com/psalias2006/github-trending
 - `★N` = Total stars (when daily stars unavailable)
 - `~` = Approximated (not from official trending API)
 
-*Note: Example output is automatically updated by CI on each push and daily at midnight UTC.*
 
 ## Features
 
@@ -53,8 +53,8 @@ Inspired by [github-trending-cli](https://github.com/psalias2006/github-trending
 ### From Source
 
 ```bash
-git clone https://github.com/schausberger/trotd
-cd trotd
+git clone https://github.com/schausberger/git-trending-motd
+cd git-trending-motd
 cargo install --path .
 
 # Now you can use: git trending
@@ -202,7 +202,7 @@ sudo bash examples/motd-setup.sh
 
 ### Configuration File
 
-trotd looks for configuration in:
+git-trending looks for configuration in:
 1. `~/.config/trotd/trotd.toml` (XDG config directory)
 2. `./trotd.toml` (current directory)
 
@@ -256,7 +256,7 @@ export TROTD_GITEA_TOKEN="..."
 CLI flags override both config file and environment variables:
 
 ```bash
-trotd --max 5 --lang rust --min-stars 100 --exclude-topics awesome --provider gh --no-cache --json
+git trending --max 5 --lang rust --min-stars 100 --exclude-topics awesome --provider gh --no-cache --json
 ```
 
 ## Provider Details
