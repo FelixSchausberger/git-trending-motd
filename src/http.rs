@@ -126,7 +126,7 @@ impl HttpClient {
         token: Option<&str>,
     ) -> Result<T> {
         let mut headers = HeaderMap::new();
-        headers.insert(USER_AGENT, HeaderValue::from_static("trotd/0.1.0"));
+        headers.insert(USER_AGENT, HeaderValue::from_static("git-trending-motd/0.0.2"));
         headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
 
         if let Some(token) = token {
@@ -178,7 +178,7 @@ impl HttpClient {
     /// Internal method to fetch HTML once (used by retry logic)
     async fn get_html_once(&self, url: &str) -> Result<String> {
         let mut headers = HeaderMap::new();
-        headers.insert(USER_AGENT, HeaderValue::from_static("trotd/0.1.0"));
+        headers.insert(USER_AGENT, HeaderValue::from_static("git-trending-motd/0.0.2"));
         headers.insert(ACCEPT, HeaderValue::from_static("text/html"));
 
         let response = self
@@ -210,7 +210,7 @@ impl HttpClient {
     /// Send a PUT request (for starring repositories)
     pub async fn put(&self, url: &str, token: Option<&str>) -> Result<()> {
         let mut headers = HeaderMap::new();
-        headers.insert(USER_AGENT, HeaderValue::from_static("trotd/0.1.0"));
+        headers.insert(USER_AGENT, HeaderValue::from_static("git-trending-motd/0.0.2"));
         headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
 
         if let Some(token) = token {
@@ -241,7 +241,7 @@ impl HttpClient {
     #[allow(dead_code)]
     pub async fn delete(&self, url: &str, token: Option<&str>) -> Result<()> {
         let mut headers = HeaderMap::new();
-        headers.insert(USER_AGENT, HeaderValue::from_static("trotd/0.1.0"));
+        headers.insert(USER_AGENT, HeaderValue::from_static("git-trending-motd/0.0.2"));
         headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
 
         if let Some(token) = token {
@@ -272,7 +272,7 @@ impl HttpClient {
     #[allow(dead_code)]
     pub async fn head(&self, url: &str, token: Option<&str>) -> Result<bool> {
         let mut headers = HeaderMap::new();
-        headers.insert(USER_AGENT, HeaderValue::from_static("trotd/0.1.0"));
+        headers.insert(USER_AGENT, HeaderValue::from_static("git-trending-motd/0.0.2"));
 
         if let Some(token) = token {
             let auth_value = HeaderValue::from_str(&format!("Bearer {token}"))

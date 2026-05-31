@@ -21,7 +21,7 @@ impl StarredCache {
     pub fn new() -> Result<Self> {
         let cache_dir = dirs::cache_dir()
             .context("Failed to determine cache directory")?
-            .join("trotd");
+            .join("git-trending-motd");
 
         Ok(Self {
             cache_file: cache_dir.join("starred.json"),
@@ -118,7 +118,7 @@ mod tests {
     #[tokio::test]
     async fn test_starred_cache_roundtrip() {
         let temp_dir =
-            std::env::temp_dir().join(format!("trotd-starred-test-{}", StarredCache::now()));
+            std::env::temp_dir().join(format!("git-trending-motd-starred-test-{}", StarredCache::now()));
         let cache = StarredCache {
             cache_file: temp_dir.join("starred.json"),
             ttl_secs: 3600,
@@ -151,7 +151,7 @@ mod tests {
     #[tokio::test]
     async fn test_starred_cache_expiry() {
         let temp_dir =
-            std::env::temp_dir().join(format!("trotd-starred-expiry-{}", StarredCache::now()));
+            std::env::temp_dir().join(format!("git-trending-motd-starred-expiry-{}", StarredCache::now()));
         let cache = StarredCache {
             cache_file: temp_dir.join("starred.json"),
             ttl_secs: 0, // Immediate expiry
@@ -170,6 +170,44 @@ mod tests {
 
         // Cleanup
         let _ = cache.clear().await;
+        let _ = std::fs::remove_dir_all(&temp_dir);
+    }
+
+    #[tokio::test]
+    async fn test_starred_cache_loads_after_save() {
+        // This test verifies cache survives "process restart" simulation
+        let temp_dir =
+            std::env::temp_dir().join(format!("git-trending-motd-starred-persist-{}", StarredCache::now()));
+        let cache_file = temp_dir.join("starred.json");
+
+        // Create first cache instance and save data
+        let cache1 = StarredCache {
+            cache_file: cache_file.clone(),
+            ttl_secs: 3600,
+        };
+
+        let mut starred = HashSet::new();
+        starred.insert("rust-lang/rust".to_string());
+        starred.insert("tokio-rs/tokio".to_string());
+        cache1.save_starred(starred).await.unwrap();
+
+        // Simulate process restart by creating new cache instance with same file
+        let cache2 = StarredCache {
+            cache_file,
+            ttl_secs: 3600,
+        };
+
+        // Should load the data from file
+        let loaded = cache2.get_starred().await;
+        assert!(loaded.is_some(), "Cache should persist across instances");
+
+        let starred_set = loaded.unwrap();
+        assert_eq!(starred_set.len(), 2);
+        assert!(starred_set.contains("rust-lang/rust"));
+        assert!(starred_set.contains("tokio-rs/tokio"));
+
+        // Cleanup
+        let _ = cache2.clear().await;
         let _ = std::fs::remove_dir_all(&temp_dir);
     }
 }

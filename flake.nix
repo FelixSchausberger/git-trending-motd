@@ -6,12 +6,15 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs { inherit system; };
-      in
-      {
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+  }:
+    flake-utils.lib.eachDefaultSystem (
+      system: let
+        pkgs = import nixpkgs {inherit system;};
+      in {
         packages.default = pkgs.rustPlatform.buildRustPackage {
           pname = "git-trending-motd";
           version = "0.0.2";
@@ -22,7 +25,7 @@
             description = "Trending repositories of the day - minimal MOTD CLI";
             homepage = "https://github.com/schausberger/git-trending-motd";
             license = licenses.mit;
-            maintainers = [ "schausberger" ];
+            maintainers = ["schausberger"];
           };
         };
 

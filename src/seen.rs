@@ -24,7 +24,7 @@ impl SeenTracker {
     pub fn new() -> Result<Self> {
         let cache_dir = dirs::cache_dir()
             .context("Failed to determine cache directory")?
-            .join("trotd");
+            .join("git-trending-motd");
 
         Ok(Self {
             seen_file: cache_dir.join("seen.json"),
@@ -178,7 +178,7 @@ mod tests {
     #[tokio::test]
     async fn test_seen_tracker_new_day() {
         let temp_dir = std::env::temp_dir().join(format!(
-            "trotd-seen-test-{}",
+            "git-trending-motd-seen-test-{}",
             chrono::Utc::now().timestamp()
         ));
         let tracker = SeenTracker {
@@ -210,7 +210,7 @@ mod tests {
     #[tokio::test]
     async fn test_filter_unseen() {
         let temp_dir = std::env::temp_dir().join(format!(
-            "trotd-seen-filter-{}",
+            "git-trending-motd-seen-filter-{}",
             chrono::Utc::now().timestamp()
         ));
         let tracker = SeenTracker {
@@ -232,6 +232,131 @@ mod tests {
         assert_eq!(unseen.len(), 2);
         assert_eq!(unseen[0].name, "owner2/repo2");
         assert_eq!(unseen[1].name, "owner3/repo3");
+
+        // Cleanup
+        let _ = tracker.clear().await;
+        let _ = std::fs::remove_dir_all(&temp_dir);
+    }
+
+    #[tokio::test]
+    async fn test_daily_reset_clears_yesterday_data() {
+        use chrono::{Duration as ChronoDuration, Utc};
+
+        let temp_dir = std::env::temp_dir().join(format!(
+            "git-trending-motd-seen-reset-{}",
+            Utc::now().timestamp()
+        ));
+        let tracker = SeenTracker {
+            seen_file: temp_dir.join("seen.json"),
+        };
+
+        // Manually create a seen entry from yesterday
+        let yesterday = (Utc::now() - ChronoDuration::days(1))
+            .format("%Y-%m-%d")
+            .to_string();
+
+        let old_entry = SeenEntry {
+            date: yesterday.clone(),
+            seen_repos: vec!["owner/old-repo".to_string()].into_iter().collect(),
+            fetch_offset: 10,
+        };
+
+        // Write the old entry
+        let json = serde_json::to_string(&old_entry).unwrap();
+        std::fs::create_dir_all(&temp_dir).unwrap();
+        tokio::fs::write(&tracker.seen_file, json)
+            .await
+            .unwrap();
+
+        // Get seen should return empty (yesterday's data is stale)
+        let seen = tracker.get_seen().await.unwrap();
+        assert!(
+            seen.is_empty(),
+            "Yesterday's seen repos should not be returned"
+        );
+
+        // Mark new repos as seen today
+        let repos = vec![create_test_repo("owner/today-repo")];
+        tracker.mark_seen(&repos).await.unwrap();
+
+        // Should only have today's repos
+        let seen = tracker.get_seen().await.unwrap();
+        assert_eq!(seen.len(), 1);
+        assert!(seen.contains("owner/today-repo"));
+        assert!(!seen.contains("owner/old-repo"));
+
+        // Cleanup
+        let _ = tracker.clear().await;
+        let _ = std::fs::remove_dir_all(&temp_dir);
+    }
+
+    #[tokio::test]
+    async fn test_offset_persists_within_same_day() {
+        let temp_dir = std::env::temp_dir().join(format!(
+            "git-trending-motd-seen-offset-{}",
+            Utc::now().timestamp()
+        ));
+        let tracker = SeenTracker {
+            seen_file: temp_dir.join("seen.json"),
+        };
+
+        // Initially offset is 0
+        let offset = tracker.get_fetch_offset().await;
+        assert_eq!(offset, 0);
+
+        // Increment offset
+        tracker.increment_fetch_offset(5).await.unwrap();
+
+        // Offset should be persisted
+        let offset = tracker.get_fetch_offset().await;
+        assert_eq!(offset, 5);
+
+        // Increment again
+        tracker.increment_fetch_offset(3).await.unwrap();
+
+        // Should accumulate
+        let offset = tracker.get_fetch_offset().await;
+        assert_eq!(offset, 8);
+
+        // Cleanup
+        let _ = tracker.clear().await;
+        let _ = std::fs::remove_dir_all(&temp_dir);
+    }
+
+    #[tokio::test]
+    async fn test_mark_seen_appends_to_existing() {
+        let temp_dir = std::env::temp_dir().join(format!(
+            "git-trending-motd-seen-append-{}",
+            Utc::now().timestamp()
+        ));
+        let tracker = SeenTracker {
+            seen_file: temp_dir.join("seen.json"),
+        };
+
+        // Mark first batch
+        let repos1 = vec![
+            create_test_repo("owner1/repo1"),
+            create_test_repo("owner2/repo2"),
+        ];
+        tracker.mark_seen(&repos1).await.unwrap();
+
+        let seen = tracker.get_seen().await.unwrap();
+        assert_eq!(seen.len(), 2);
+
+        // Mark second batch
+        let repos2 = vec![
+            create_test_repo("owner3/repo3"),
+            create_test_repo("owner4/repo4"),
+        ];
+        tracker.mark_seen(&repos2).await.unwrap();
+
+        // Should have all repos from both batches
+        let seen = tracker.get_seen().await.unwrap();
+        assert_eq!(seen.len(), 4);
+        assert!(seen.contains("owner1/repo1"));
+        assert!(seen.contains("owner2/repo2"));
+        assert!(seen.contains("owner3/repo3"));
+        assert!(seen.contains("owner4/repo4"));
 
         // Cleanup
         let _ = tracker.clear().await;

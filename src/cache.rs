@@ -23,7 +23,7 @@ impl Cache {
     pub fn new(ttl_mins: u64) -> Result<Self> {
         let cache_dir = dirs::cache_dir()
             .context("Failed to determine cache directory")?
-            .join("trotd");
+            .join("git-trending-motd");
 
         Ok(Self {
             cache_dir,
@@ -137,7 +137,7 @@ mod tests {
     #[tokio::test]
     async fn test_cache_roundtrip() {
         // Use temporary directory for testing
-        let temp_dir = std::env::temp_dir().join(format!("trotd-test-{}", Cache::now()));
+        let temp_dir = std::env::temp_dir().join(format!("git-trending-motd-test-{}", Cache::now()));
         let cache = Cache::with_dir(temp_dir.clone(), 60);
 
         let test_repos = vec![Repo {
@@ -179,7 +179,7 @@ mod tests {
     #[tokio::test]
     async fn test_cache_expiry() {
         // Use temporary directory for testing
-        let temp_dir = std::env::temp_dir().join(format!("trotd-test-{}", Cache::now()));
+        let temp_dir = std::env::temp_dir().join(format!("git-trending-motd-test-{}", Cache::now()));
         // Create cache with 0 minute TTL (expires immediately)
         let cache = Cache::with_dir(temp_dir.clone(), 0);
 

@@ -1,25 +1,25 @@
 #!/bin/bash
-# Example systemd user timer to refresh trotd cache periodically
+# Example systemd user timer to refresh git-trending-motd cache periodically
 # This ensures the cache is always fresh when you open a terminal
 
-# Create the service file at: ~/.config/systemd/user/trotd-refresh.service
-cat > ~/.config/systemd/user/trotd-refresh.service <<'EOF'
+# Create the service file at: ~/.config/systemd/user/git-trending-motd-refresh.service
+cat > ~/.config/systemd/user/git-trending-motd-refresh.service <<'EOF'
 [Unit]
-Description=Refresh trotd cache
+Description=Refresh git-trending-motd cache
 After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/env bash -c 'trotd --no-cache > /dev/null 2>&1'
+ExecStart=/usr/bin/env bash -c 'git-trending --no-cache > /dev/null 2>&1'
 
 [Install]
 WantedBy=default.target
 EOF
 
-# Create the timer file at: ~/.config/systemd/user/trotd-refresh.timer
-cat > ~/.config/systemd/user/trotd-refresh.timer <<'EOF'
+# Create the timer file at: ~/.config/systemd/user/git-trending-motd-refresh.timer
+cat > ~/.config/systemd/user/git-trending-motd-refresh.timer <<'EOF'
 [Unit]
-Description=Refresh trotd cache every hour
+Description=Refresh git-trending-motd cache every hour
 
 [Timer]
 OnBootSec=5min
@@ -32,14 +32,14 @@ EOF
 
 # Reload systemd and enable the timer
 systemctl --user daemon-reload
-systemctl --user enable trotd-refresh.timer
-systemctl --user start trotd-refresh.timer
+systemctl --user enable git-trending-motd-refresh.timer
+systemctl --user start git-trending-motd-refresh.timer
 
 echo "✅ Systemd timer created and enabled!"
 echo "The cache will be refreshed every hour."
 echo ""
 echo "Useful commands:"
-echo "  systemctl --user status trotd-refresh.timer  - Check timer status"
-echo "  systemctl --user stop trotd-refresh.timer    - Stop the timer"
-echo "  systemctl --user disable trotd-refresh.timer - Disable the timer"
-echo "  journalctl --user -u trotd-refresh.service   - View logs"
+echo "  systemctl --user status git-trending-motd-refresh.timer  - Check timer status"
+echo "  systemctl --user stop git-trending-motd-refresh.timer    - Stop the timer"
+echo "  systemctl --user disable git-trending-motd-refresh.timer - Disable the timer"
+echo "  journalctl --user -u git-trending-motd-refresh.service   - View logs"

@@ -159,8 +159,8 @@ impl Config {
     pub fn load() -> Result<Self> {
         // Try XDG config directory first, then current directory
         let config_paths = [
-            dirs::config_dir().map(|p| p.join("trotd").join("trotd.toml")),
-            Some(PathBuf::from("trotd.toml")),
+            dirs::config_dir().map(|p| p.join("git-trending-motd").join("config.toml")),
+            Some(PathBuf::from("config.toml")),
         ];
 
         for path in config_paths.iter().flatten() {
@@ -192,7 +192,7 @@ impl Config {
     /// Create a default config file in the XDG config directory if it doesn't exist
     fn create_default_config_if_missing() -> Result<()> {
         if let Some(config_dir) = dirs::config_dir() {
-            let config_path = config_dir.join("trotd").join("trotd.toml");
+            let config_path = config_dir.join("git-trending-motd").join("config.toml");
 
             // Only create if it doesn't exist
             if !config_path.exists() {
@@ -216,7 +216,7 @@ impl Config {
                     "ℹ No config file found. Created default configuration at: {}",
                     config_path.display()
                 );
-                eprintln!("  Edit this file to customize trotd settings.");
+                eprintln!("  Edit this file to customize git-trending-motd settings.");
             }
         }
 
@@ -244,57 +244,57 @@ impl Config {
 
     /// Apply environment variable overrides
     fn apply_env_overrides(&mut self) {
-        if let Ok(val) = std::env::var("TROTD_MAX_PER_PROVIDER") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_MAX_PER_PROVIDER") {
             if let Ok(max) = val.parse() {
                 self.general.max_per_provider = max;
             }
         }
 
-        if let Ok(val) = std::env::var("TROTD_LANGUAGE_FILTER") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_LANGUAGE_FILTER") {
             self.general.language_filter = val.split(',').map(|s| s.trim().to_string()).collect();
         }
 
-        if let Ok(val) = std::env::var("TROTD_GITHUB_TIMEOUT_SECS") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_GITHUB_TIMEOUT_SECS") {
             if let Ok(timeout) = val.parse() {
                 self.general.github_timeout_secs = timeout;
             }
         }
 
-        if let Ok(val) = std::env::var("TROTD_GITLAB_TIMEOUT_SECS") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_GITLAB_TIMEOUT_SECS") {
             if let Ok(timeout) = val.parse() {
                 self.general.gitlab_timeout_secs = timeout;
             }
         }
 
-        if let Ok(val) = std::env::var("TROTD_GITEA_TIMEOUT_SECS") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_GITEA_TIMEOUT_SECS") {
             if let Ok(timeout) = val.parse() {
                 self.general.gitea_timeout_secs = timeout;
             }
         }
 
-        if let Ok(val) = std::env::var("TROTD_GITEA_BASE_URL") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_GITEA_BASE_URL") {
             self.gitea.base_url = val;
         }
 
-        if let Ok(val) = std::env::var("TROTD_GITHUB_TOKEN") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_GITHUB_TOKEN") {
             self.auth.github_token = Some(val);
         }
 
-        if let Ok(val) = std::env::var("TROTD_GITLAB_TOKEN") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_GITLAB_TOKEN") {
             self.auth.gitlab_token = Some(val);
         }
 
-        if let Ok(val) = std::env::var("TROTD_GITEA_TOKEN") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_GITEA_TOKEN") {
             self.auth.gitea_token = Some(val);
         }
 
-        if let Ok(val) = std::env::var("TROTD_MIN_STARS") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_MIN_STARS") {
             if let Ok(min) = val.parse() {
                 self.general.min_stars = Some(min);
             }
         }
 
-        if let Ok(val) = std::env::var("TROTD_GITHUB_EXCLUDE_TOPICS") {
+        if let Ok(val) = std::env::var("GIT_TRENDING_MOTD_GITHUB_EXCLUDE_TOPICS") {
             self.github.exclude_topics = val.split(',').map(|s| s.trim().to_string()).collect();
         }
     }

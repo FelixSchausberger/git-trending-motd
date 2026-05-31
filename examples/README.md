@@ -65,12 +65,12 @@ end
 **For bash/zsh**:
 
 ```bash
-TROTD_CACHE="$HOME/.cache/trotd/.shown_today"
+MOTD_CACHE="$HOME/.cache/git-trending-motd/.shown_today"
 TODAY=$(date +%Y-%m-%d)
 
-if [ ! -f "$TROTD_CACHE" ] || [ "$(cat $TROTD_CACHE)" != "$TODAY" ]; then
+if [ ! -f "$MOTD_CACHE" ] || [ "$(cat $MOTD_CACHE)" != "$TODAY" ]; then
     if command -v git-trending &> /dev/null; then
-        git trending && echo "$TODAY" > "$TROTD_CACHE"
+        git trending && echo "$TODAY" > "$MOTD_CACHE"
     fi
 fi
 ```
@@ -79,7 +79,7 @@ fi
 
 ```fish
 if status is-interactive; and not set -q TMUX; and not set -q ZELLIJ
-    set -l cache_file "$HOME/.cache/trotd/.shown_today"
+    set -l cache_file "$HOME/.cache/git-trending-motd/.shown_today"
     set -l today (date +%Y-%m-%d)
 
     if not test -f "$cache_file"; or test (cat "$cache_file" 2>/dev/null) != "$today"

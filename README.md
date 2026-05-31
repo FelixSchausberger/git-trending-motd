@@ -68,6 +68,35 @@ nix build
 nix develop  # Enter development shell
 ```
 
+## Migration from trotd
+
+If you're upgrading from the old `trotd` name:
+
+### 1. Update Configuration
+```bash
+# Move config directory
+mv ~/.config/trotd ~/.config/git-trending-motd
+# Rename config file
+mv ~/.config/git-trending-motd/trotd.toml ~/.config/git-trending-motd/config.toml
+```
+
+### 2. Update Cache (Optional)
+```bash
+mv ~/.cache/trotd ~/.cache/git-trending-motd
+```
+
+### 3. Update Environment Variables
+Replace in your shell configs (~/.bashrc, ~/.zshrc, etc.):
+- `TROTD_*` → `GIT_TRENDING_MOTD_*`
+
+### 4. Update systemd Timers (if applicable)
+```bash
+systemctl --user stop trotd-refresh.timer
+systemctl --user disable trotd-refresh.timer
+rm ~/.config/systemd/user/trotd-refresh.*
+# Re-run examples/systemd-timer-refresh.sh
+```
+
 ## Usage
 
 ### Basic Usage
@@ -123,9 +152,9 @@ To see starred status indicators (⭐) and use the star command, configure your 
 
 ```bash
 # Via environment variable
-export TROTD_GITHUB_TOKEN="ghp_your_token_here"
+export GIT_TRENDING_MOTD_GITHUB_TOKEN="ghp_your_token_here"
 
-# Or in config file (~/.config/trotd/trotd.toml)
+# Or in config file (~/.config/git-trending-motd/config.toml)
 [auth]
 github_token = "ghp_your_token_here"
 
@@ -203,10 +232,10 @@ sudo bash examples/motd-setup.sh
 ### Configuration File
 
 git-trending looks for configuration in:
-1. `~/.config/trotd/trotd.toml` (XDG config directory)
-2. `./trotd.toml` (current directory)
+1. `~/.config/git-trending-motd/config.toml` (XDG config directory)
+2. `./config.toml` (current directory)
 
-Example `trotd.toml`:
+Example `config.toml`:
 
 ```toml
 [general]
@@ -241,14 +270,14 @@ exclude_topics = ["awesome", "awesome-list"]  # Exclude these topics
 Environment variables override config file settings:
 
 ```bash
-export TROTD_MAX_PER_PROVIDER=5
-export TROTD_LANGUAGE_FILTER="rust,go,python"
-export TROTD_MIN_STARS=100
-export TROTD_GITHUB_EXCLUDE_TOPICS="awesome,tutorial"
-export TROTD_GITEA_BASE_URL="https://codeberg.org"
-export TROTD_GITHUB_TOKEN="ghp_..."
-export TROTD_GITLAB_TOKEN="glpat-..."
-export TROTD_GITEA_TOKEN="..."
+export GIT_TRENDING_MOTD_MAX_PER_PROVIDER=5
+export GIT_TRENDING_MOTD_LANGUAGE_FILTER="rust,go,python"
+export GIT_TRENDING_MOTD_MIN_STARS=100
+export GIT_TRENDING_MOTD_GITHUB_EXCLUDE_TOPICS="awesome,tutorial"
+export GIT_TRENDING_MOTD_GITEA_BASE_URL="https://codeberg.org"
+export GIT_TRENDING_MOTD_GITHUB_TOKEN="ghp_..."
+export GIT_TRENDING_MOTD_GITLAB_TOKEN="glpat-..."
+export GIT_TRENDING_MOTD_GITEA_TOKEN="..."
 ```
 
 ### Command-Line Flags

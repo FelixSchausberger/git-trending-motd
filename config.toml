@@ -1,5 +1,5 @@
-# trotd configuration file
-# Place in ~/.config/trotd/trotd.toml or ./trotd.toml
+# git-trending-motd configuration file
+# Place in ~/.config/git-trending-motd/config.toml or ./config.toml
 
 [general]
 # Maximum repositories per provider (default for all providers)
